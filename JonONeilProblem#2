@@ -1,0 +1,59 @@
+# Ideas/Thought process - - - - - - - - - - - - - - - - - - - - - - - 
+#- This seems like a greedy approach problem, so dynamic programming might make sense - could be approached dynamically but is more efficient to do it as just greedy
+#- The general approach is to take the largest value from the list remove it. Then add it to the smallest list.
+#- More specifically the approach below makes the initial solutions array and sum array with the first n elements of data O(n).
+#  Then poping each piece of data, check which index in the sum array is the smallest, then appending the data to the solution
+#  array of the same index ~O((m-n)*n)= O(m*n)
+#- O(n)+ O(m*n) = O(m*n)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+import random
+from typing import List
+
+data = [(random.randint(1, 100)) for _ in range(10)]
+
+
+data.sort()
+# Test Data
+# data =  [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+# Setting up the number of partitions
+n = 3
+
+def partition_dataset(data: List[int], n: int) -> List[List[int]]:
+    print("data:", data)
+
+    solArr = []
+    sumArr = []
+    
+    # Initialize n sublists and their sums
+    for i in range(n):
+        newData = data.pop()
+        solArr.append([newData])
+        sumArr.append(newData) 
+
+    print("Initial solArr:", solArr)
+
+    # Iterate over the remaining data
+    for j in data:# m
+        newData = data.pop()
+        
+        # Find the index of the sublist with the lowest sum in sumArr
+        minPartitionIndex = 0
+        lowestSum = sumArr[0]
+        
+        for i in range(1, n):
+            if sumArr[i] < lowestSum:
+                lowestSum = sumArr[i]
+                minPartitionIndex = i
+
+        # Append the new data to the selected sublist in solArr
+        solArr[minPartitionIndex].append(newData)
+        # Update the corresponding sum in sumArr
+        sumArr[minPartitionIndex] += newData
+
+    # print("Final solArr:", solArr)
+    # print("Final sumArr:", sumArr)
+    return solArr
+
+partition_dataset(data, n)
